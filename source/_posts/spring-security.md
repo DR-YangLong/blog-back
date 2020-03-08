@@ -1,0 +1,38 @@
+title: Spring Security流程简要分析
+date: 2018-09-24 20:09:56
+categories: [java]
+tags: [java,Spring,spring security]
+---
+
+# Spring Security认证授权基本结构
+![web下大概流程图](./Spring_Security.bmp)
+
+## Spring Security的Filter
+Spring Security通过一系列的Fliter来进行认证授权。
+通过SecurityFilterAutoConfiguration注册一系列的SecurityFilter到FilterChainProxy，对请求进行一层层过滤。
+Spring Security内置的Fliter，按照顺序如下：
+1. ChannelProcessingFilter，如果你访问的 channel 错了，那首先就会在 channel 之间进行跳转，如 http 变为 https。
+2. SecurityContextPersistenceFilter，一开始进行request的时候在SecurityContextHolder中建立一个SecurityContext，然后在请求结束的时候，任何对SecurityContext的改变都可以被copy到HttpSession。
+3. ConcurrentSessionFilter，因为它需要使用 SecurityContextHolder 的功能，而且更新对应 session 的最后更新时间，以及通过SessionRegistry 获取当前的 SessionInformation 以检查当前的session 是否已经过期，过期则会调用 LogoutHandler。
+4. 认证处理Filter，如 UsernamePasswordAuthenticationFilter，CasAuthenticationFilter，BasicAuthenticationFilter 等，以至于 SecurityContextHolder 可以被更新为包含一个有效的 Authentication 请求。
+5. SecurityContextHolderAwareRequestFilter，它将会把HttpServletRequest 封装成一个继承自 HttpServletRequestWrapper 的 SecurityContextHolderAwareRequestWrapper，同时使用SecurityContext 实现了 HttpServletRequest 中与安全相关的方法。
+6. JaasApiIntegrationFilter，如果 SecurityContextHolder 中拥有的 Authentication 是一个 JaasAuthenticationToken，那么该 Filter 将使用包含在 JaasAuthenticationToken 中的 Subject 继续执行 FilterChain。
+7. RememberMeAuthenticationFilter，如果之前的认证处理机制没有更新 SecurityContextHolder，并且用户请求包含了一个 Remember-Me 对应的 cookie，那么一个对应的 Authentication 将会设给 SecurityContextHolder。
+8. AnonymousAuthenticationFilter，如果之前的认证机制都没有更新 SecurityContextHolder 拥有的 Authentication，那么一个AnonymousAuthenticationToken 将会设给 SecurityContextHolder。
+9. ExceptionTransactionFilter，用于处理在 FilterChain 范围内抛出的 AccessDeniedException 和 AuthenticationException，并把它们转换为对应的Http错误码返回或者对应的页面。
+10. FilterSecurityInterceptor，保护 Web URI，并且在访问被拒绝时抛出异常。
+
+其中，通常需要扩展的地方在4这个位置。可以通过AbstractConfiguredSecurityBuilder的addFilter方法进行添加，addFilter方法可指定添加位置，自定义的Filter要添加到FilterSecurityInterceptor之前ConcurrentSessionFilter之后。
+
+<!-- more -->
+## WEB http认证授权
+request请求经过认证处理Filter时，此filter从request中获取需要的账号，凭证，生成未认证的Authentication，委托给AuthenticationManager进行认证，实际上是由AuthenticationManager的实现类ProviderManager进行认证，ProviderManager持有多个AuthenticationProvider实例，循环找出支持当前Authentication的provider实例，进行认证，在provider中，首先使用UserdetailsService的loadUserByUsername获取单前用户名对应的用户在系统中的信息，之后对用户状态进行检查，如果通过检查，则使用PasswordEncoder进行凭证对比，如果一致，则认证成功，否则认证失败。无论认证成功或失败，ProviderManager都会通过预先配置的AuthenticationEventPublisher发布相应事件。另外可以在认证处理filter中预先设置成功或失败的Handler，对认证失败或成功进行自定义的处理。
+
+## 扩展点
+一般web程序而言，扩展自己的认证流程。以下步骤即可：
+1. 自定义Authentication，继承自AbstractAuthenticationToken。
+2. 自定义AuthenticationProvider,实现AuthenticationProvider接口。supports方法支持1中定义的Authentication。authenticate方法根据自身业务，加载系统中用户，与request中用户做对比，完成认证授权。
+3. 自定义认证Filter，继承自AbstractAuthenticationProcessingFilter，实现attemptAuthentication方法，从request中生成1中定义的Authentication，使用AuthenticationManager进行认证。
+4. 通过WebSecurityConfigurerAdapter将自定义的provider配置到AuthenticationManagerBuilder，将自定义的认证filter配置到HttpSecurity。
+
+另外，自定义的AuthenticationProvider中，获取用户信息和对比用户凭证也可扩展。
