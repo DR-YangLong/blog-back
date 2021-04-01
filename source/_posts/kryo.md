@@ -1,6 +1,6 @@
 title: Kryo序列化
 date: 2018-02-06 19:40:56
-categories: [JAVA]
+categories: [java]
 tags: [java]
 ---
 

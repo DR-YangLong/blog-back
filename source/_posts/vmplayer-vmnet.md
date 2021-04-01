@@ -1,6 +1,6 @@
 title: Failed to build vmnet. Failed to execute the build Command
 date: 2016-12-21 10:00
-categories: [JAVA]
+categories: [linux]
 tags: [linux,ubuntu]
 ---
 
