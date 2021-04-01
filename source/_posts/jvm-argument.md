@@ -1,7 +1,7 @@
 title: JVM参数
 date: 2017-04-20 20:09:56
 categories: [java]
-tags: [java]
+tags: [java,jvm]
 ---
 ## 通用参数
 |参数|含义|默认值|说明|

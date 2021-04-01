@@ -1,7 +1,7 @@
 title: Happen-Before
 date: 2017-04-14 12:20:56
-categories: [JAVA]
-tags: [Collection]
+categories: [java]
+tags: [jvm]
 ---
 
 ## 关于happen-before

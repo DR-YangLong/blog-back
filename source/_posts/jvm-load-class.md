@@ -1,7 +1,7 @@
 title: 类加载机制
 date: 2017-10-09 20:40:56
-categories: [JAVA]
-tags: [java]
+categories: [java]
+tags: [java,jvm]
 ---
 # 概述
 类加载机制：虚拟机把描述类的数据从Class文件(来源可以是文件，或者文件流等)加载在内存，并对数据进行校验、转换解析和初始化，最终形成可以被虚拟机直接使用的java类型。

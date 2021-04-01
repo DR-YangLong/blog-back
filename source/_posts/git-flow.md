@@ -1,6 +1,6 @@
 title: Git Flow使用
 date: 2016-09-08 17:40:56
-categories: [JAVA]
+categories: [java]
 tags: [github]
 ---
 

@@ -1,6 +1,6 @@
 title: Git入门
 date: 2016-05-28 21:30:00
-categories: [java]
+categories: [git]
 tags: [java,git]
 ---
 

@@ -1,7 +1,7 @@
 title: 垃圾收集器与内存分配
 date: 2017-10-08 20:40:56
-categories: [JAVA]
-tags: [java]
+categories: [java]
+tags: [java,jvm]
 ---
 
 # 垃圾收集
