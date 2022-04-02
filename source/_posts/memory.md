@@ -47,7 +47,7 @@ tags: [java,jdk]
 
 ## 对象的内存布局
 此处参考<https://segmentfault.com/a/1190000004574249>。      
-![JVM中对象内存布局](./object-in-memory.png)
+![JVM中对象内存布局](./memory/object-in-memory.png)
 对象在内存中分为3个区域：对象头，实例数据，对齐填充，前2个区域一定有，对齐填充是为了补齐，jvm要求对象地址必须是8byte的整数倍。
 
 ### 对象头
@@ -61,10 +61,10 @@ tags: [java,jdk]
 在64位系统下：        
 31bit用于hashcode，4bit分代年龄，2bit锁标志位，1bit固定为0，未使用25bit。
 32位系统在锁定状态时存储的内容：       
-![JVM中对象内存布局](./mark-word-32bit.png)
+![JVM中对象内存布局](./memory/mark-word-32bit.png)
 
 64位系统在锁定状态时存储的内容：
-![JVM中对象内存布局](./mark-word-64bit.png)
+![JVM中对象内存布局](./memory/mark-word-64bit.png)
 
 > Klass
 
