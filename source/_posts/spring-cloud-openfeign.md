@@ -10,7 +10,7 @@ feign本质是通过解析接口及方法，参数的注解，生成HTTP客户�
 
 ## 基础配置
 
-feign可以单独使用，但但多数时间是在Spring Cloud应用中使用。
+feign可以单独使用，但大多数情况还是在Spring Cloud应用中使用。
 
 ### pom配置
 
